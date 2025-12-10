@@ -1,0 +1,227 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0d1117; /* Even darker blue background */
+    color: #c9d1d9; /* Lighter text for better contrast */
+}
+
+.container {
+    padding-top: 50px;
+}
+
+.card {
+    border: none;
+    border-radius: 20px; /* Smoother edges */
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); /* More prominent shadow */
+    margin-bottom: 30px;
+    background-color: #161b22; /* Very dark card background */
+}
+
+.card .head-title {
+    padding: 20px;
+    border-bottom: 1px solid #30363d; /* Darker border */
+    color: #c9d1d9;
+}
+
+.table {
+    margin-bottom: 0;
+    color: #c9d1d9; /* Table text color */
+}
+
+.table thead.bg-secondary {
+    background-color: #21262d !important; /* Dark blue header */
+}
+
+.btn {
+    border-radius: 30px; /* Even smoother buttons */
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #218bff; /* Brighter modern blue */
+    border-color: #218bff;
+}
+
+.btn-primary:hover {
+    background-color: #007bff;
+    border-color: #007bff;
+    transform: translateY(-2px);
+}
+
+.btn-danger {
+    background-color: #ff6347; /* Red for danger */
+    border-color: #ff6347;
+}
+
+.btn-danger:hover {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    transform: translateY(-2px);
+}
+
+.btn-warning {
+    background-color: #ffc107; /* Orange for warning */
+    border-color: #ffc107;
+    color: #333; /* Darker text for warning */
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+    border-color: #e0a800;
+    transform: translateY(-2px);
+}
+
+.btn-info {
+    background-color: #17a2b8; /* Teal for info */
+    border-color: #17a2b8;
+}
+
+.btn-info:hover {
+    background-color: #138496;
+    border-color: #138496;
+    transform: translateY(-2px);
+}
+
+.modal-content {
+    border-radius: 20px; /* Smoother modal edges */
+    background-color: #161b22; /* Dark modal background */
+    color: #c9d1d9;
+}
+
+.modal-header {
+    border-bottom: none;
+    padding: 25px 35px;
+}
+
+.modal-header.bg-primary {
+    background-color: #218bff !important;
+}
+
+.modal-header.bg-warning {
+    background-color: #ffc107 !important;
+}
+
+.modal-header.bg-danger {
+    background-color: #ff6347 !important;
+}
+
+.modal-header.bg-info {
+    background-color: #17a2b8 !important;
+}
+
+.modal-title {
+    font-weight: 700; /* Bolder title */
+    color: #c9d1d9;
+}
+
+.modal-body {
+    padding: 25px 35px;
+}
+
+.form-control {
+    border-radius: 15px; /* Smoother input fields */
+    background-color: #30363d; /* Darker input fields */
+    border-color: #30363d;
+    color: #c9d1d9;
+}
+
+.form-control::placeholder {
+    color: #8b949e;
+}
+
+.add-new-button {
+    margin-bottom: 25px;
+}
+
+/* Login Page Styles */
+.login-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 450px; /* Slightly wider */
+    border-radius: 25px; /* Even smoother edges for login card */
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8); /* Much more pronounced shadow for "box" effect */
+    background-color: #161b22; /* Very dark card background */
+    border: 1px solid #30363d; /* Subtle border for definition */
+}
+
+.login-card .card-header {
+    background-color: #21262d; /* Slightly lighter dark blue header */
+    color: #fff;
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    padding: 25px;
+    text-align: center;
+    font-size: 1.8rem; /* Larger title */
+    font-weight: 700;
+}
+
+.login-card .card-body {
+    padding: 35px;
+}
+
+.login-card .btn-primary {
+    background-color: #218bff;
+    border-color: #218bff;
+    font-weight: 700;
+    padding: 15px;
+    border-radius: 30px;
+}
+
+.login-card .btn-primary:hover {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+/* Main Menu Styles */
+.main-menu-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.main-menu-card {
+    width: 100%;
+    max-width: 550px; /* Slightly wider */
+    border-radius: 25px; /* Smoother edges */
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8); /* More pronounced shadow */
+    background-color: #161b22; /* Very dark card background */
+    border: 1px solid #30363d; /* Subtle border for definition */
+}
+
+.main-menu-card .card-body {
+    padding: 35px;
+}
+
+.main-menu-card .list-group-item {
+    border-radius: 15px;
+    margin-bottom: 12px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    background-color: #30363d; /* Darker list item background */
+    color: #c9d1d9;
+    border: 1px solid #30363d;
+}
+
+.main-menu-card .list-group-item:hover {
+    transform: translateX(8px); /* More pronounced hover effect */
+    background-color: #21262d; /* Darker hover effect */
+    color: #fff;
+    border-color: #218bff; /* Highlight border on hover */
+}
+
+.system-title {
+    font-weight: 700; /* Bold */
+    font-family: 'Poppins', sans-serif; /* Ensure modern font */
+}
