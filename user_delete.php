@@ -21,7 +21,7 @@ if(isset($_POST['deleteData']))
             if ($id_to_delete == $logged_in_user_id) {
                 $_SESSION['message'] = "You cannot delete your own account!";
                 $_SESSION['message_type'] = "danger";
-                header('Location: index.php');
+                header('Location: user_management.php');
                 exit();
             }
 
@@ -32,13 +32,13 @@ if(isset($_POST['deleteData']))
             $stmt_delete->execute();
             $_SESSION['message'] = "User deleted successfully";
             $_SESSION['message_type'] = "success";
-            header('Location: index.php');
+            header('Location: user_management.php');
             exit();
             $stmt_delete->close();
         } else {
             $_SESSION['message'] = "User not found!";
             $_SESSION['message_type'] = "danger";
-            header('Location: index.php');
+            header('Location: user_management.php');
             exit();
         }
     } catch (mysqli_sql_exception $e) {

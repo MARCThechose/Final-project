@@ -1,10 +1,57 @@
 <?php
 /*
-This file contains the user management interface.
-*/
-?>
+This project is a desktop application that serves as an inventory and user management system. It features a graphical user interface (GUI) for interaction.
 
-<div class="container">
+The core functionalities of the project are:
+
+*   **User Management:** The system allows for the management of users, including creating, updating, and deleting user records. it has two part normal users which cna interacte with other users and admin whitch is souly the one responsible for adding and deleting user records
+*   **Inventory Management:** The system provides functionality to manage an inventory of items.  probably includes adding, removing, and viewing inventory data.
+*   **Database Interaction:** The application interacts with a database to store and retrieve user and inventory information.
+*/
+
+  include('connection.php');
+
+  if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit();
+  }
+
+  $user_role = $_SESSION['role'];
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css"
+    integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+    integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+  <link rel="stylesheet" href="css/style.css">
+  <title>User Management System</title>
+  <link rel="icon" href="icon/ipxel.svg" type="image/svg+xml">
+</head>
+
+<body>
+  <?php
+    if (isset($_SESSION['message']) && isset($_SESSION['message_type'])) {
+      echo '<div class="alert alert-' . $_SESSION['message_type'] . ' alert-dismissible fade show" role="alert">
+              ' . $_SESSION['message'] . '
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>';
+      unset($_SESSION['message']);
+      unset($_SESSION['message_type']);
+    }
+  ?>
+
+
+  <br><br><br>
+
+  <div class="container">
     <div class="row">
         <div class="col-md-12">
             <a href="main_menu.php" class="btn btn-primary mb-3">
@@ -27,7 +74,7 @@ This file contains the user management interface.
               <i class="fas fa-plus"></i> Add
             </a>
           </div>
-
+          
           <br><br><br>
           <table class="table table-striped">
             <thead class="bg-secondary text-white">
@@ -42,7 +89,7 @@ This file contains the user management interface.
             </thead>
             <tbody>
               <?php
-
+              
               $sql = "SELECT id, username, role FROM users";
               $result = mysqli_query($conn, $sql);
               $i = 1;
@@ -211,3 +258,55 @@ This file contains the user management interface.
       </div>
     </div>
   </div>
+
+  <script src="http://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+    integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
+    integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+    crossorigin="anonymous"></script>
+
+   <script>
+    $(document).ready(function () {
+      $('.updateBtn').on('click', function () {
+        $('#updateModal').modal('show');
+        $tr = $(this).closest('tr');
+        var data = $tr.children("td").map(function () {
+          return $(this).text().trim();
+        }).get();
+        var id = $(this).data('id');
+        console.log(data);
+        $('#updateId').val(id);
+        $('#updateUsername').val(data[1]);
+        $('#updateRole').val(data[2]);
+      });
+
+      $('.viewBtn').on('click', function () {
+        $('#viewModal').modal('show');
+        $tr = $(this).closest('tr');
+        var data = $tr.children("td").map(function () {
+          return $(this).text().trim();
+        }).get();
+        console.log(data);
+        $('#viewUsername').text(data[1]);
+        $('#viewRole').text(data[2]);
+      });
+
+      $('.deleteBtn').on('click', function () {
+        $('#deleteModal').modal('show');
+        var id = $(this).data('id');
+        console.log(id);
+        $('#deleteId').val(id);
+      });
+    });
+    </script>
+  
+  <footer>
+    <div class="container text-center py-3">
+      CCIS: Database final project <img src="icon/ipxel.svg" alt="ipxel logo" style="height: 20px; vertical-align: middle;">
+    </div>
+  </footer>
+</body>
+</html>

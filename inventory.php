@@ -20,133 +20,141 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
     integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
   <link rel="stylesheet" href="css/style.css">
-  <title>Inventory Container System</title>
+  <title>Inventory Management</title>
   <link rel="icon" href="icon/ipxel.svg" type="image/svg+xml">
 </head>
 
 <body>
-  <?php
-    if (isset($_SESSION['success'])) {
-      echo "<script>alert('" . $_SESSION['success'] . "');</script>";
-      unset($_SESSION['success']);
-    }
-  ?>
-
-
-  <br><br><br>
-
-  <div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <a href="main_menu.php" class="btn btn-primary mb-3">
-                <i class="fas fa-arrow-left"></i> Back to Main Menu
-            </a>
-            <a href="logout.php" class="btn btn-danger mb-3">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </a>
-        </div>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Inventory System</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="main_menu.php"><i class="fas fa-arrow-left"></i> Back to Main Menu</a>
+        </li>
+      </ul>
+      <form action="inventory.php" method="GET" class="form-inline my-2 my-lg-0">
+        <input type="text" name="search" class="form-control mr-sm-2" placeholder="Search by name or origin" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+        <button type="submit" class="btn btn-outline-success my-2 my-sm-0">
+          <i class="fas fa-search"></i> Search
+        </button>
+        <?php if (isset($_GET['search']) && !empty($_GET['search'])): ?>
+          <a href="inventory.php" class="btn btn-outline-secondary my-2 my-sm-0 ml-2">
+            <i class="fas fa-times"></i> Clear
+          </a>
+        <?php endif; ?>
+      </form>
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </li>
+      </ul>
     </div>
-    <div class="row">
-      <div class="col-md-12 card">
-        <div>
-          <div class="head-title">
-            <h4 class="text-center system-title">Inventory Container System</h4>
-            <hr>
-          </div>
-          <div class="col-md-3 float-left add-new-button">
-            <a href="#" class="btn btn-primary btn-block" data-toggle="modal" data-target="#addModal">
-              <i class="fas fa-plus"></i> Add
-            </a>
-          </div>
+  </nav>
 
-          <div class="col-md-9 float-right">
-            <form action="inventory.php" method="GET" class="form-inline float-right">
-              <div class="form-group">
-                <input type="text" name="search" class="form-control" placeholder="Search by name or origin" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
-              </div>
-              <button type="submit" class="btn btn-success ml-2">
-                <i class="fas fa-search"></i> Search
-              </button>
-              <?php if (isset($_GET['search']) && !empty($_GET['search'])): ?>
-                <a href="inventory.php" class="btn btn-secondary ml-2">
-                  <i class="fas fa-times"></i> Clear
-                </a>
-              <?php endif; ?>
-            </form>
-          </div>
-          
-          <br><br><br>
-          <table class="table table-striped">
-            <thead class="bg-secondary text-white">
-              <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>Quantity</th>
-                <th>Origin</th>
-                <th>Date of Arrival</th>
-                <th>Last Updated</th>
-                <th>View</th>
-                <th>Update</th>
-                <th>Delete</th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php
+  <div class="container mt-5">
+    <?php
+      if (isset($_SESSION['message']) && isset($_SESSION['message_type'])) {
+        echo '<div class="alert alert-' . $_SESSION['message_type'] . ' alert-dismissible fade show" role="alert">
+                ' . $_SESSION['message'] . '
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>';
+        unset($_SESSION['message']);
+        unset($_SESSION['message_type']);
+      }
+    ?>
 
-              $results_per_page = 10;
-              $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-              $page = max(1, $page);
-              $start_limit = ($page - 1) * $results_per_page;
+    <div class="card">
+      <div class="card-header text-center">
+        <h2>Inventory Management</h2>
+      </div>
+      <div class="card-body">
+        <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#addModal">
+          <i class="fas fa-plus"></i> Add New Item
+        </button>
 
-              $search_sql = '';
-              if(isset($_GET['search']) && !empty($_GET['search'])){
-                $search = mysqli_real_escape_string($conn, $_GET['search']);
-                $search_sql = " WHERE name LIKE '%$search%' OR origin LIKE '%$search%'";
-              }
+        <table class="table table-striped table-bordered">
+          <thead class="bg-dark text-white">
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Quantity</th>
+              <th>Origin</th>
+              <th>Date of Arrival</th>
+              <th>Last Updated</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php
+            $results_per_page = 10;
+            $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+            $page = max(1, $page);
+            $start_limit = ($page - 1) * $results_per_page;
 
-              $count_sql = "SELECT COUNT(id) AS total FROM inventory" . $search_sql;
-              $count_result = mysqli_query($conn, $count_sql);
-              $total_row = mysqli_fetch_assoc($count_result);
-              $total_results = $total_row['total'];
-              $total_pages = ceil($total_results / $results_per_page);
-              
-              $sql = "SELECT id, name, quantity, origin, date_of_arrival, last_updated FROM inventory" . $search_sql . " LIMIT $start_limit, $results_per_page";
+            $search_sql = '';
+            if(isset($_GET['search']) && !empty($_GET['search'])){
+              $search = mysqli_real_escape_string($conn, $_GET['search']);
+              $search_sql = " WHERE name LIKE '%$search%' OR origin LIKE '%$search%'";
+            }
 
-              $result = mysqli_query($conn, $sql);
-              $i = $start_limit + 1;
+            $count_sql = "SELECT COUNT(id) AS total FROM inventory" . $search_sql;
+            $count_result = mysqli_query($conn, $count_sql);
+            $total_row = mysqli_fetch_assoc($count_result);
+            $total_results = $total_row['total'];
+            $total_pages = ceil($total_results / $results_per_page);
+            
+            $sql = "SELECT id, name, quantity, origin, date_of_arrival, last_updated FROM inventory" . $search_sql . " LIMIT $start_limit, $results_per_page";
 
-              if(mysqli_num_rows($result) > 0)
-              {
-                while($row = mysqli_fetch_assoc($result)){
-                  ?>
-                  <tr>
-                    <td><?php echo $i; ?></td>
-                    <td><?php echo $row['name']; ?></td>
-                    <td><?php echo $row['quantity']; ?></td>
-                    <td><?php echo $row['origin']; ?></td>
-                    <td><?php echo $row['date_of_arrival']; ?></td>
-                    <td><?php echo $row['last_updated']; ?></td>
-                    <td>
-                      <button type="button" class="btn btn-info viewBtn" data-id="<?php echo $row['id']; ?>"> <i class="fas fa-eye"></i> View </button>
-                    </td>
-                    <td>
-                      <button type="button" class="btn btn-warning updateBtn" data-id="<?php echo $row['id']; ?>"> <i class="fas fa-edit"></i> Update </button>
-                    </td>
-                    <td>
-                      <button type="button" class="btn btn-danger deleteBtn" data-id="<?php echo $row['id']; ?>"> <i class="fas fa-trash-alt"></i> Delete </button>
-                    </td>
+            $result = mysqli_query($conn, $sql);
+            $i = $start_limit + 1;
+
+            if(mysqli_num_rows($result) > 0)
+            {
+              while($row = mysqli_fetch_assoc($result)){
+                ?>
+                <tr>
+                  <td><?php echo $i; ?></td>
+                  <td><?php echo $row['name']; ?></td>
+                  <td><?php echo $row['quantity']; ?></td>
+                  <td><?php echo $row['origin']; ?></td>
+                  <td><?php echo $row['date_of_arrival']; ?></td>
+                  <td><?php echo $row['last_updated']; ?></td>
+                  <td>
+                    <button type="button" class="btn btn-info btn-sm viewBtn" data-id="<?php echo $row['id']; ?>"> <i class="fas fa-eye"></i></button>
+                    <button type="button" class="btn btn-warning btn-sm updateBtn" data-id="<?php echo $row['id']; ?>"> <i class="fas fa-edit"></i></button>
+                    <button type="button" class="btn btn-danger btn-sm deleteBtn" data-id="<?php echo $row['id']; ?>"> <i class="fas fa-trash-alt"></i></button>
+                  </td>
                 </tr>
                 <?php
                 $i++;
-                }
-              }else{
-                echo "<script> alert('No items Found');</script>";
               }
-              ?>
-            </tbody>
-            </table>
+            }else{
+              echo "<tr><td colspan='7' class='text-center'>No inventory items found.</td></tr>";
+            }
+            ?>
+          </tbody>
+        </table>
 
-        </div>
+        <!-- Pagination -->
+        <nav aria-label="Page navigation">
+          <ul class="pagination justify-content-center">
+            <?php if ($page > 1): ?>
+              <li class="page-item"><a class="page-link" href="?page=<?php echo $page - 1; ?><?php echo isset($_GET['search']) ? '&search=' . htmlspecialchars($_GET['search']) : ''; ?>">Previous</a></li>
+            <?php endif; ?>
+            <?php for ($p = 1; $p <= $total_pages; $p++): ?>
+              <li class="page-item <?php echo ($p == $page) ? 'active' : ''; ?>"><a class="page-link" href="?page=<?php echo $p; ?><?php echo isset($_GET['search']) ? '&search=' . htmlspecialchars($_GET['search']) : ''; ?>"><?php echo $p; ?></a></li>
+            <?php endfor; ?>
+            <?php if ($page < $total_pages): ?>
+              <li class="page-item"><a class="page-link" href="?page=<?php echo $page + 1; ?><?php echo isset($_GET['search']) ? '&search=' . htmlspecialchars($_GET['search']) : ''; ?>">Next</a></li>
+            <?php endif; ?>
+          </ul>
+        </nav>
       </div>
     </div>
   </div>
@@ -158,7 +166,7 @@
     <div class="modal-dialog modal-md">
       <div class="modal-content">
         <div class="modal-header bg-primary text-white">
-          <h5 class="modal-title">Add New Item</h5>
+          <h5 class="modal-title">Add New Inventory Item</h5>
           <button class="close" data-dismiss="modal">
             <span>&times;</span>
           </button>
@@ -166,7 +174,7 @@
         <div class="modal-body">
           <form action="inventory_insert.php" method="POST">
             <div class="form-group">
-              <label for="name">Item Name</label>
+              <label for="name">Name</label>
               <input type="text" name="name" class="form-control" placeholder="Enter item name" required>
             </div>
             <div class="form-group">
@@ -179,7 +187,7 @@
             </div>
             <div class="form-group">
               <label for="origin">Origin</label>
-              <input type="text" name="origin" class="form-control" placeholder="Enter origin" required>
+              <input type="text" name="origin" class="form-control" placeholder="Enter origin">
             </div>
             <div class="form-group">
               <label for="date_of_arrival">Date of Arrival</label>
@@ -194,7 +202,7 @@
     </div>
   </div>
 
-  <!-- VIEW MODAL -->
+  <!-- VIEW ITEM MODAL -->
   <div class="modal fade" id="viewModal">
     <div class="modal-dialog modal-md">
       <div class="modal-content">
@@ -206,35 +214,41 @@
         </div>
         <div class="modal-body">
           <div class="row">
-            <div class="col-sm-5 col-xs-6 tital " >
-              <strong>Item Name:</strong>
+            <div class="col-sm-5 col-xs-6 tital">
+              <strong>Name:</strong>
             </div>
             <div class="col-sm-7 col-xs-6 ">
               <div id="viewName"></div>
             </div>
-            <div class="col-sm-5 col-xs-6 tital " >
+            <div class="col-sm-5 col-xs-6 tital">
               <strong>Quantity:</strong>
             </div>
             <div class="col-sm-7 col-xs-6 ">
               <div id="viewQuantity"></div>
             </div>
-            <div class="col-sm-5 col-xs-6 tital " >
+            <div class="col-sm-5 col-xs-6 tital">
               <strong>Description:</strong>
             </div>
             <div class="col-sm-7 col-xs-6 ">
               <div id="viewDescription"></div>
             </div>
-            <div class="col-sm-5 col-xs-6 tital " >
+            <div class="col-sm-5 col-xs-6 tital">
               <strong>Origin:</strong>
             </div>
             <div class="col-sm-7 col-xs-6 ">
               <div id="viewOrigin"></div>
             </div>
-            <div class="col-sm-5 col-xs-6 tital " >
+            <div class="col-sm-5 col-xs-6 tital">
               <strong>Date of Arrival:</strong>
             </div>
             <div class="col-sm-7 col-xs-6 ">
               <div id="viewDateOfArrival"></div>
+            </div>
+            <div class="col-sm-5 col-xs-6 tital">
+              <strong>Last Updated:</strong>
+            </div>
+            <div class="col-sm-7 col-xs-6 ">
+              <div id="viewLastUpdated"></div>
             </div>
           </div>
           <br>
@@ -246,12 +260,12 @@
     </div>
   </div>
 
-  <!-- UPDATE MODAL -->
+  <!-- UPDATE ITEM MODAL -->
   <div class="modal fade" id="updateModal">
     <div class="modal-dialog modal-md">
       <div class="modal-content">
         <div class="modal-header bg-warning text-white">
-          <h5 class="modal-title">Edit Item</h5>
+          <h5 class="modal-title">Edit Inventory Item</h5>
           <button class="close" data-dismiss="modal">
             <span>&times;</span>
           </button>
@@ -260,7 +274,7 @@
           <form action="inventory_update.php" method="POST">
             <input type="hidden" name="updateId" id="updateId">
             <div class="form-group">
-              <label for="updateName">Item Name</label>
+              <label for="updateName">Name</label>
               <input type="text" name="updateName" id="updateName" class="form-control" placeholder="Enter item name" required>
             </div>
             <div class="form-group">
@@ -273,7 +287,7 @@
             </div>
             <div class="form-group">
               <label for="updateOrigin">Origin</label>
-              <input type="text" name="updateOrigin" id="updateOrigin" class="form-control" placeholder="Enter origin" required>
+              <input type="text" name="updateOrigin" id="updateOrigin" class="form-control" placeholder="Enter origin">
             </div>
             <div class="form-group">
               <label for="updateDateOfArrival">Date of Arrival</label>
@@ -288,12 +302,12 @@
     </div>
   </div>
 
-  <!-- DELETE MODAL -->
+  <!-- DELETE ITEM MODAL -->
   <div class="modal fade" id="deleteModal">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header bg-danger text-white">
-          <h5 class="modal-title" id="exampleModalLabel">Delete Item</h5>
+          <h5 class="modal-title">Delete Inventory Item</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -321,6 +335,6 @@
     integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
     crossorigin="anonymous"></script>
   <script src="js/inventory.js"></script>
-  
 </body>
+
 </html>
