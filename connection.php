@@ -4,9 +4,9 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 $servername = "localhost";
 $username = "root";
-$password = "";
-$dbname = "inventory_container_system";
-$port = 3307; // need to specify the port now since it is not default
+$password = "JulianMV072505>";
+$dbname = "projectdb";
+$port = 3306; // need to specify the port now since it is not default
 
 // Create connection
 // We added '$port' at the end of this line so it knows where to look

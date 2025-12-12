@@ -15,7 +15,7 @@ if(isset($_POST['insertData']))
         {
             $_SESSION['message'] = "User added successfully";
             $_SESSION['message_type'] = "success";
-            header('Location: user_management.php');
+            header('Location: index.php');
             exit();
         }
     } catch (mysqli_sql_exception $e) {

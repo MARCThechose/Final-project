@@ -42,7 +42,7 @@ This project is a web-based application designed to manage users and inventory. 
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     ```
 4.  Update `connection.php` with your database credentials (host, username, password, database name).
-5.  Access the project through your web browser (e.g., `http://localhost/Final-project/login.php`).
+5.  Access the project through your web browser (e.g., `http://localhost/Final-proj/login.php`).
 
 ## Project Structure
 
